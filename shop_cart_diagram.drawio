@@ -1,1 +1,34 @@
-<mxfile host="app.diagrams.net" modified="2022-10-27T15:20:01.036Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36 Edg/83.0.478.50" version="20.5.1" etag="nYVRaqcvA-G3kFWTpQdH" type="github"><diagram id="kFOTnbfPuyiyp_aMae8p">UzV2zq1wL0osyPDNT0nNUTV2VTV2LsrPL4GwciucU3NyVI0MMlNUjV1UjYwMgFjVyA2HrCFY1qAgsSg1rwSLBiADYTaQg2Y1AA==</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2022-10-27T15:24:32.013Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36 Edg/83.0.478.50" etag="288C0vq_TleG7mP1hjcr" version="20.5.1" type="github">
+  <diagram id="kFOTnbfPuyiyp_aMae8p" name="Page-1">
+    <mxGraphModel dx="868" dy="482" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="wisTz4SjFv2RytTbGVDD-1" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;user&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="170" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="wisTz4SjFv2RytTbGVDD-2" value="登入成功" style="rhombus;whiteSpace=wrap;html=1;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="200" y="155" width="90" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="wisTz4SjFv2RytTbGVDD-4" value="管理者登入" style="rhombus;whiteSpace=wrap;html=1;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="300" y="210" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="wisTz4SjFv2RytTbGVDD-5" value="顧客登入" style="rhombus;whiteSpace=wrap;html=1;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="305" y="100" width="90" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="wisTz4SjFv2RytTbGVDD-7" value="&lt;span style=&quot;font-size: 18px;&quot;&gt;shop_cart&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="430" y="110" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="wisTz4SjFv2RytTbGVDD-8" value="顯示&lt;br&gt;購物車&lt;br&gt;內容" style="rhombus;whiteSpace=wrap;html=1;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="570" y="100" width="90" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="wisTz4SjFv2RytTbGVDD-9" value="新增商品至購物車" style="rhombus;whiteSpace=wrap;html=1;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="700" y="50" width="90" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="wisTz4SjFv2RytTbGVDD-10" value="新增商品至購物車" style="rhombus;whiteSpace=wrap;html=1;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="840" y="50" width="90" height="70" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
