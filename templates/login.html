@@ -1,0 +1,18 @@
+
+<html>
+	<head>
+		<title>
+			se mid-term - Cart 
+		</title>
+		<h1>
+			購物車系統 109213059
+		</h1>
+	</head>
+	<body>
+        <form enctype = "multipart/form-data" method = "post">
+            {% csrf_token %}
+            {{ form_login.as_p }}
+            <input type = "submit"></input>
+        </form>
+	</body>
+</html>

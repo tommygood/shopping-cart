@@ -1,0 +1,78 @@
+<html>
+	<head>
+		{% if error|length != 0 %}
+		    {% for i in error %}
+			<script>
+				var error = "{{i}}"
+				alert(error);
+			</script>
+			{% endfor %}
+		{% endif %}
+		<title>
+			se mid-term - Cart 
+		</title>
+		<h1>
+			顧客主頁面 <br/> {{ user }} {{ title }}
+		</h1>
+	</head>
+	<body>
+		<button type = 'button' id = 'log_out'>登出</button>
+		<div>尚有庫存之貨品清單</div>
+		<table border = 2>
+        	{% for product in all_products %}
+				<tr>
+					<td><span><b>商品代號：</b></span>{{ product.0 }}</td>
+					<td><span><b>商品名稱：</b></span>{{ product.1 }}</td>
+					<td><span><b>商品價格：</b></span>{{ product.2 }}</td>
+					<td><span><b>商品數量：</b></span>{{ product.3 }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+		<div>購物車</div>
+		<table border = 2>
+        	{% for cart_product in cart_products %}
+				<tr>
+					<td><span><b>購物車序號:</b></span>{{ cart_product.0 }}</td>
+					<td><span><b>商品代號：</b></span>{{ cart_product.2 }}</td>
+					<td><span><b>商品數量：</b></span>{{ cart_product.3 }}</td>
+        			{% for product in all_products %}
+						{% if product.0 == cart_product.2 %}
+							<td><span><b>單筆價格:</b></span>{% widthratio product.2 1 cart_product.3 %}</td>
+						{% endif %}
+					{% endfor %}
+				</tr>
+			{% endfor %}
+		</table>
+        <form enctype = "multipart/form-data" method = "post">
+            {% csrf_token %}
+			<span>新增至購物車</span>
+            {{ insert.as_p }}
+            <input name = 'insert' type = "submit"></input>
+		</form>
+		<br/>
+        <form enctype = "multipart/form-data" method = "post">
+            {% csrf_token %}
+			<span>刪除購物車</span>
+            {{ delete.as_p }}
+            <input name = 'delete' type = "submit"></input>
+		</form>
+        <form enctype = "multipart/form-data" method = "post">
+            {% csrf_token %}
+			<span>結算購物車</span>
+            {{ count.as_p }}
+            <input name = 'count' type = "submit"></input>
+		</form>
+	</body>
+    <script>
+		function getId(id) {
+			return document.getElementById(id);
+		}
+
+		getId('log_out').addEventListener('click', logOut);
+
+		function logOut() {
+			window.location.href = '/';
+		}
+	</script>
+</html>
+
