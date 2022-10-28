@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.db import connection
-from .form import login, insertProduct, delProduct, updateProduct, insertCart, delCart, countCart
+from .form import login, insertProduct, delProduct, updateProduct, insertCart, delCart, countCart, deliverProduct
 
 def loginPage(request) :
     cursor = connection.cursor()
@@ -35,35 +35,52 @@ def cusMain(request) : # 顧客主頁面
         count = countCart(request.POST)
         if request.method == 'POST' : # POST
             if 'insert' in request.POST : # 新增商品
+               cursor.execute("select * from product where `stock` > 0") # 還有庫存的商品
+               all_products = cursor.fetchall()
+               cursor.execute("select `pId`, `amount` from shop_cart where `paid` = 1 and `delivered` = 0") # find the reserved products
+               reserved_products = cursor.fetchall()
+               all_products = takeZero(rmReversed(arrayOf(all_products), reserved_products)) # turn tuple to list
                pId = request.POST['pId'] # 商品代號
                amount = request.POST['amount'] # 要多少件商品
-               cursor.execute("select `stock` from product where `no` = %s", (pId,))
-               product_amount = cursor.fetchone()
-               if (product_amount[0] >= int(amount)) : # requirement not over the stock
-                   cursor.execute("insert into shop_cart(`uId`, `pId`, `amount`) values(%s, %s, %s)", (user, pId, amount,))
+               product_stock = findProduct(all_products, pId) # find the right stock of product
+               if (product_stock == None) :
+                   error.append('insert failed, as the product Id is null')
                else :
-                   error.append('stock is not sufficient')
+                   if (product_stock >= int(amount)) : # requirement not over the stock
+                       cursor.execute("insert into shop_cart(`uId`, `pId`, `amount`) values(%s, %s, %s)", (user, pId, amount,))
+                   else :
+                       error.append('stock is not sufficient')
             if 'delete' in request.POST : # 新增商品
                cId = request.POST['cId'] # 商品代號
                if (0 == cursor.execute('delete from shop_cart where `no` = %s and `uId` = %s', (cId, user,))) : 
                    error.append('can not delete, as no this id in your cart')
             if 'count' in request.POST : # 新增商品
-               cId = request.POST['cId'] # 商品代號
-               if (0 == cursor.execute('update shop_cart set `paid` = 1 where `no` = %s', (cId,))) : 
-                   error.append('can not update, as no this id in your cart')
+               #cId = request.POST['cId'] # 商品代號
+               cursor.execute('select `pId`, `amount` from shop_cart where `uId` = %s and `delivered` = 0 and `paid` = 0', (user,)) # cart product is in cart and be counted
+               cart_product = cursor.fetchall()
+               if (len(cart_product) == 0) :
+                   error.append('can not update, as no product in your cart')
                else : # count successful
-                   cursor.execute('select `pId`, `amount` from shop_cart where `no` = %s', (cId,))
-                   cart_product = cursor.fetchone()
+                   cursor.execute('update shop_cart set `paid` = 1 where `uId` = %s and `delivered` = 0', (user,)) # set cart product is paid
+                   for cart_product_pId, cart_product_amount in cart_product :
+                       cursor.execute('select `stock` from product where `no` = %s', (cart_product_pId,)) # find the stock
+                       product_stock = cursor.fetchone()[0] # this product original stock
+                       changed_num = product_stock - cart_product_amount # original stock - are buy
+                       cursor.execute('update product set `stock` = %s where `no` = %s', (changed_num, cart_product_pId,))
+                   '''cursor.execute('update shop_cart set `paid` = 1 where `uId` = %s and `delivered` = 0', (user,)) 
                    cart_product_pId = cart_product[0] # no of product
                    cart_product_amount = cart_product[1] # num of buying
                    cursor.execute('select `stock` from product where `no` = %s', (cart_product_pId,)) # find the stock
                    product_stock = cursor.fetchone()[0] # this product original stock
                    changed_num = product_stock - cart_product_amount # original stock - are buy
-                   cursor.execute('update product set `stock` = %s where `no` = %s', (changed_num, cart_product_pId,))
+                   cursor.execute('update product set `stock` = %s where `no` = %s', (changed_num, cart_product_pId,))'''
         cursor.execute("select * from shop_cart where `uId` = %s and `paid` = 0", (user,)) # 該使用者還沒刪除的購物車商品
         cart_products = cursor.fetchall()
         cursor.execute("select * from product where `stock` > 0") # 還有庫存的商品
         all_products = cursor.fetchall()
+        cursor.execute("select `pId`, `amount` from shop_cart where `paid` = 1 and `delivered` = 0") # find the reserved products
+        reserved_products = cursor.fetchall()
+        all_products = takeZero(rmReversed(arrayOf(all_products), reserved_products)) # turn tuple to list
         context = {'count' : count, 'delete' : delete, 'error' : error, 'user' : user, 'title' : title, 'all_products' : all_products, 'insert' : insert, 'cart_products' : cart_products}
         return render(request, 'cusMain.html', context) 
     else :
@@ -73,10 +90,12 @@ def bossMain(request) : # 管理者主頁面
     user = request.session.get('user')
     title = request.session.get('title')
     if (user and title == 'boss') : # 是管理者
+        error = []
         cursor = connection.cursor()
         insert = insertProduct(request.POST)
         delete = delProduct(request.POST)
         update = updateProduct(request.POST)
+        deliver = deliverProduct(request.POST)
         if request.method == 'POST' :
             if 'insert' in request.POST : # 新增商品
                 name = request.POST['name']
@@ -92,13 +111,58 @@ def bossMain(request) : # 管理者主頁面
                 price = request.POST['price']
                 amount = request.POST['amount']
                 cursor.execute("update product set `price` = %s, `stock` = %s, `name` = %s where `no` = %s", (price, amount, name, pId,))
-            #cursor.execute("select `no`, `name`, `title` from product;")
-            #all_users = cursor.fetchall()
+            if 'deliver' in request.POST : # 刪除商品
+                cId = request.POST['cId']
+                if 0 == cursor.execute("update shop_cart set `delivered` = 1 where `no` = %s and `delivered` = 0", (cId,)) : # update cart product to is delivered where it is not deliver
+                    error.append('can not deliver, as no this product Id') # pId is none
+                else :
+                   cursor.execute('select `pId`, `amount` from shop_cart where `no` = %s', (cId,)) # find the stock
+                   cart_product = cursor.fetchone()
+                   pId = cart_product[0] # the product Id of cart product
+                   amount = cart_product[1] # the amount of cart product
+                   cursor.execute('select `stock` from product where `no` = %s', (pId,)) # find the stock
+                   product_stock = cursor.fetchone()[0] # this product original stock
+                   changed_num = product_stock - amount # original stock - are buy
+                   cursor.execute('update product set `stock` = %s where `no` = %s', (changed_num, pId,))
         cursor.execute("select * from product")
         all_products = cursor.fetchall()
-        context = {'user' : user, 'title' : title, 'insertProduct' : insert, 'delProduct' : delete, 'updateProduct' : update, "all_products" : all_products}
+        cursor.execute("select * from shop_cart where `paid` = 1 and `delivered` = 0;") # the cart product is paid and not delivered yet
+        cart_products = cursor.fetchall()
+        context = {'error' : error, 'cart_products' : cart_products, 'deliverProduct' : deliver, 'user' : user, 'title' : title, 'insertProduct' : insert, 'delProduct' : delete, 'updateProduct' : update, "all_products" : all_products}
         return render(request, 'bossMain.html', context) 
     else :
         return loginPage(request)
 
+def arrayOf(tup) : # turn tuple to array
+    total_array = []
+    # two layer tuple
+    for each_tup in tup :
+        each_array = []
+        for each_tup_value in each_tup :
+            each_array.append(each_tup_value)
+        total_array.append(each_array)
+    return total_array
+
+def rmReversed(all_products, reserved_products) : # return the minus reserved all_products
+    for pId, amount in reserved_products :
+        for i in range(len(all_products)) :
+            if (all_products[i][0] == pId) :
+                all_products[i][3] -= amount # minus the num of reserved
+    return all_products
+
+def findProduct(all_products, pId) :
+    print(123)
+    print(all_products)
+    print(pId)
+    for each_products in all_products :
+        if (each_products[0] == int(pId)) :
+            return each_products[3]
+    return None
+
+def takeZero(all_products) : # take out the product which stock is <= where is minus the reserved
+    new_all_products = []
+    for each_product in all_products :
+        if (each_product[3] > 0) : # stock is > 0
+            new_all_products.append(each_product) # add product
+    return new_all_products
 

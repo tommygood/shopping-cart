@@ -4,5 +4,5 @@ create table shop_cart (
 `pId` int(11),
 `amount` int(3),
 `paid` int(1) default 0,
-`deleted` int(1) default 0
+`delivered` int(1) default 0
 )

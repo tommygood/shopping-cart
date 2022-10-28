@@ -59,7 +59,6 @@
         <form enctype = "multipart/form-data" method = "post">
             {% csrf_token %}
 			<span>結算購物車</span>
-            {{ count.as_p }}
             <input name = 'count' type = "submit"></input>
 		</form>
 	</body>

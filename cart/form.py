@@ -1,29 +1,32 @@
 from django import forms
 
 class login(forms.Form) :
-    name = forms.CharField(required=False)
-    password = forms.CharField(required=False, widget = forms.PasswordInput())
+    name = forms.CharField(required=False, label = '商品名稱', widget= forms.TextInput(attrs={'placeholder':'name', 'required' : True}))
+    password = forms.CharField(required=False, widget= forms.PasswordInput(attrs={'required' : True}))
 
 class insertProduct(forms.Form) : # 新增商品
-    name = forms.CharField(required=False, label = '商品名稱')
-    price = forms.CharField(required=False, label = '商品價格')
-    amount = forms.CharField(required=False, label = '商品數量')
+    name = forms.CharField(required=False, label = '商品名稱', widget= forms.TextInput(attrs={'placeholder':'name', 'required' : True}))
+    price = forms.CharField(required=False, label = '商品價格', widget= forms.TextInput(attrs={'placeholder':'price', 'required' : True}))
+    amount = forms.CharField(required=False, label = '商品數量', widget= forms.TextInput(attrs={'placeholder':'amount', 'required' : True}))
 
 class delProduct(forms.Form) : # 刪除商品
-    pId = forms.CharField(required=False, label = '商品代號')
+    pId = forms.CharField(required=False, label = '商品代號', widget= forms.TextInput(attrs={'placeholder':'product Id', 'required' : True}))
 
 class updateProduct(forms.Form) : # 更新商品
-    pId = forms.CharField(required=False, label = '商品代號')
-    name = forms.CharField(required=False, label = '商品名稱')
-    price = forms.CharField(required=False, label = '商品價格')
-    amount = forms.CharField(required=False, label = '商品數量')
+    pId = forms.CharField(required=False, label = '商品代號', widget= forms.TextInput(attrs={'placeholder':'product Id', 'required' : True}))
+    name = forms.CharField(required=False, label = '商品名稱', widget= forms.TextInput(attrs={'placeholder':'name', 'required' : True}))
+    price = forms.CharField(required=False, label = '商品價格', widget= forms.TextInput(attrs={'placeholder':'price', 'required' : True}))
+    amount = forms.CharField(required=False, label = '商品數量', widget= forms.TextInput(attrs={'placeholder':'amount', 'required' : True}))
 
 class insertCart(forms.Form) : # 新增至購物車
-    pId = forms.CharField(required=False, label = '商品代號')
-    amount = forms.CharField(required=False, label = '商品數量')
+    pId = forms.CharField(required=False, label = '商品代號', widget= forms.TextInput(attrs={'placeholder':'product Id', 'required' : True}))
+    amount = forms.CharField(required=False, label = '商品數量', widget= forms.TextInput(attrs={'placeholder':'amount', 'required' : True}))
 
 class delCart(forms.Form) : # 刪除商品
-    cId = forms.CharField(required=False, label = '購物車代號')
+    cId = forms.CharField(required=False, label = '購物車代號', widget= forms.TextInput(attrs={'placeholder':'cart product Id', 'required' : True}))
 
 class countCart(forms.Form) : # 刪除商品
     cId = forms.CharField(required=False, label = '購物車代號')
+
+class deliverProduct(forms.Form) : # 刪除商品
+    cId = forms.CharField(required=False, label = '購物車代號', widget= forms.TextInput(attrs={'placeholder':'cart product Id', 'required' : True}))
