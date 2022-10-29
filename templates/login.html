@@ -1,6 +1,13 @@
-
 <html>
 	<head>
+		{% if error|length != 0 %}
+		    {% for i in error %}
+			<script>
+				var error = "{{i}}"
+				alert(error);
+			</script>
+			{% endfor %}
+		{% endif %}
 		<title>
 			se mid-term - Cart 
 		</title>
