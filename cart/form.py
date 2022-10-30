@@ -1,7 +1,7 @@
 from django import forms
 
 class login(forms.Form) :
-    name = forms.CharField(required=False, label = '商品名稱', widget= forms.TextInput(attrs={'placeholder':'name', 'required' : True}))
+    name = forms.CharField(required=False, label = 'account', widget= forms.TextInput(attrs={'placeholder':'name', 'required' : True}))
     password = forms.CharField(required=False, widget= forms.PasswordInput(attrs={'required' : True}))
 
 class insertProduct(forms.Form) : # 新增商品
