@@ -14,8 +14,14 @@
 		<h1>
 			購物車系統 109213059
 		</h1>
+		<h2>
+			default account :
+		</h2>
 	</head>
 	<body>
+		<b>customer - account : 2, pwd : 123</b>
+		<br/>
+		<b>manager - account : 1, pwd : 123</b>
         <form enctype = "multipart/form-data" method = "post">
             {% csrf_token %}
             {{ form_login.as_p }}
